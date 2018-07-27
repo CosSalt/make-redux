@@ -7,17 +7,6 @@
 // ReactDOM.render(<App />, document.getElementById('root'));
 // // registerServiceWorker();
 
-const appState = {
-  title: {
-    text: 'React.js 小书',
-    color: 'red',
-  },
-  content: {
-    text: 'React.js 小书',
-    color: 'blue',
-  }
-}
-
 function renderApp (appState, oldAppState = {}) {
   if(appState === oldAppState) return
   renderTitle(appState.title, oldAppState.title)
@@ -41,8 +30,20 @@ function renderContent (content, oldContent) {
 }
 
 // 修改数据入口（所有的数据的修改必须通过此函数）
-function stateChanger (state, action) {
+function stateChanger (state, action = {}) {
   const {type, color, text} = action
+  if(!state) {
+    state = {
+      title: {
+        text: 'React.js 小书',
+        color: 'red',
+      },
+      content: {
+        text: 'React.js 小书',
+        color: 'blue',
+      }
+    }
+  }
   let res
   switch (type) {
     case 'UPDATE_TITLE_TEXT':
@@ -70,19 +71,21 @@ function stateChanger (state, action) {
   return res
 }
 
-function createStore (state, stateChanger) {
+function createStore (stateChanger) {
+  let state = null
   const listeners = []
   const subscribe = (listener) => listeners.push(listener)
   const getState = () => state
   const dispatch = (action) => {
     const oldState = state
-    state = stateChanger(state, action)
+    state = stateChanger(state, action) // 覆盖原对象
     listeners.forEach(listener => listener(oldState))
   }
+  dispatch() // 初始化state
   return{getState, dispatch, subscribe}
 }
 
-const store = createStore(appState, stateChanger)
+const store = createStore(stateChanger)
 
 store.subscribe((oldState) => renderApp(store.getState(), oldState)) // 更新数据后自动调用 renderApp 方法
 
