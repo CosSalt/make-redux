@@ -73,5 +73,4 @@ renderApp(store.getState()) // 首次渲染页面
 store.dispatch({type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》'})
 store.dispatch({type: 'UPDATE_TITLE_COLOR', color: 'blue'})
 
-
 // renderApp(store.getState()) // 把新的数据渲染到页面上（不需要了）
