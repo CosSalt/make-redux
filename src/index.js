@@ -38,7 +38,7 @@ function renderContent (content) {
 }
 
 // 修改数据入口（所有的数据的修改必须通过此函数）
-function dispatch (action) {
+function stateChanger (action) {
   const {type, color, text} = action
   switch (type) {
     case 'UPDATE_TITLE_TEXT':
@@ -58,9 +58,11 @@ function createStore (state, stateChanger) {
   return{getState, dispatch}
 }
 
-renderApp(appState)
+const store = createStore(appState, stateChanger)
+renderApp(store.getState()) // 首次渲染页面
 
-dispatch({type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》'})
-dispatch({type: 'UPDATE_TITLE_COLOR', color: 'blue'})
+// 数据修改
+store.dispatch({type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》'})
+store.dispatch({type: 'UPDATE_TITLE_COLOR', color: 'blue'})
 
-renderApp(appState)
+renderApp(store.getState()) // 把新的数据渲染到页面上
