@@ -71,14 +71,14 @@ function stateChanger (state, action = {}) {
   return res
 }
 
-function createStore (stateChanger) {
+function createStore (reducer) {
   let state = null
   const listeners = []
   const subscribe = (listener) => listeners.push(listener)
   const getState = () => state
   const dispatch = (action) => {
     const oldState = state
-    state = stateChanger(state, action) // 覆盖原对象
+    state = reducer(state, action) // 覆盖原对象
     listeners.forEach(listener => listener(oldState))
   }
   dispatch() // 初始化state
@@ -96,3 +96,35 @@ store.dispatch({type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》'})
 store.dispatch({type: 'UPDATE_TITLE_COLOR', color: 'blue'})
 
 // renderApp(store.getState()) // 把新的数据渲染到页面上（不需要了）
+
+// 一个新的reducer,theme reducer
+function themeReducer (state, action = {}) {
+  if (!state) {
+    state = {
+      themeName: 'Red Theme',
+      themeColor: 'red',
+    }
+  }
+  const {type, themeName, themeColor} = action
+  let res
+  switch (type) {
+    case 'UPDATE_THEME_NAME':
+      res = {
+        ...state,
+        themeName
+      }
+      break
+    case 'UPDATE_THEME_COLOR':
+      res = {
+        ...state,
+        themeColor
+      }
+      break
+    default:
+      res = state
+      break
+  }
+  return res
+}
+
+const themeStore = createStore(themeReducer)
