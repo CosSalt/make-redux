@@ -18,19 +18,22 @@ const appState = {
   }
 }
 
-function renderApp (appState) {
-  renderTitle(appState.title)
-  renderContent(appState.content)
+function renderApp (appState, oldAppState = {}) {
+  if(appState === oldAppState) return
+  renderTitle(appState.title, oldAppState.title)
+  renderContent(appState.content, oldAppState.content)
 }
 
-function renderTitle (title) {
+function renderTitle (title, oldTitle) {
+  if(title === oldTitle) return
   const {text, color} = title
   const titleDOM = document.getElementById('title')
   titleDOM.innerHTML = text
   titleDOM.style.color = color
 }
 
-function renderContent (content) {
+function renderContent (content, oldContent) {
+  if(content === oldContent) return
   const contentDOM = document.getElementById('content')
   const {text, color} = content
   contentDOM.innerHTML = text
@@ -38,18 +41,33 @@ function renderContent (content) {
 }
 
 // 修改数据入口（所有的数据的修改必须通过此函数）
-function stateChanger (action) {
+function stateChanger (state, action) {
   const {type, color, text} = action
+  let res
   switch (type) {
     case 'UPDATE_TITLE_TEXT':
-      appState.title.text = text
+      res = {
+        ...state,
+        title:{
+          ...state.title,
+          text
+        }
+      }
       break
     case 'UPDATE_TITLE_COLOR':
-      appState.title.color = color
+      res = {
+        ...state,
+        title:{
+          ...state.title,
+          color
+        }
+      }
       break
     default:
+      res = state
       break
   }
+  return res
 }
 
 function createStore (state, stateChanger) {
@@ -57,15 +75,16 @@ function createStore (state, stateChanger) {
   const subscribe = (listener) => listeners.push(listener)
   const getState = () => state
   const dispatch = (action) => {
-    stateChanger(state, action)
-    listeners.forEach(listener => listener())
+    const oldState = state
+    state = stateChanger(state, action)
+    listeners.forEach(listener => listener(oldState))
   }
   return{getState, dispatch, subscribe}
 }
 
 const store = createStore(appState, stateChanger)
 
-store.subscribe(() => renderApp(store.getState())) // 更新数据后自动调用 renderApp 方法
+store.subscribe((oldState) => renderApp(store.getState(), oldState)) // 更新数据后自动调用 renderApp 方法
 
 renderApp(store.getState()) // 首次渲染页面
 
