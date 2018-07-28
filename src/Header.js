@@ -15,10 +15,13 @@ class Header extends Component {
 
   componentWillMount () {
     this._updateThemeColor()
+    const { store } = this.context
+    store.subscribe(() => this._updateThemeColor())
   }
 
   _updateThemeColor () {
     const {store} = this.context
+
     const state = store.getState() || {}
     const {themeColor} = state
     this.setState({themeColor})
