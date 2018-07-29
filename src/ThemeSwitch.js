@@ -13,10 +13,6 @@ class ThemeSwitch extends Component {
     if(onSwitchColor) {
       onSwitchColor(color)
     }
-    // store.dispatch({
-    //   type: 'CHANGE_COLOR',
-    //   themeColor: color
-    // })
   }
 
   render () {
