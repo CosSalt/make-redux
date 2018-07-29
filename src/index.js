@@ -1,22 +1,13 @@
 import React,{Component} from 'react';
 import ReactDOM from 'react-dom';
 // import App from './app'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import Header from './Header'
 import Content from './Content'
 import store from './store'
+import {Provider} from './react-redux'
 
 class Index extends Component {
-  static childContextTypes = {
-    store: PropTypes.object
-  }
-
-  getChildContext () {
-    return {
-      store
-    }
-  }
-
   render () {
     return (
       <div>
@@ -28,7 +19,9 @@ class Index extends Component {
 }
 
 ReactDOM.render(
-  <Index />,
+  <Provider store={store}>
+    <Index />
+  </Provider>,
   document.getElementById('root')
 )
 
