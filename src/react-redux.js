@@ -1,16 +1,50 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 
-const connect = (mapStateToProps) => (WrappedComponent) => {
+const connect = (mapStateToProps, mapDispatchToProps) => (WrappedComponent) => {
   class Connect extends Component {
     static contextTypes = {
       store: PropTypes.object
     }
 
-    _getMapStateProps () {
+    constructor () {
+      super()
+      this.state = {allProps: {}}
+    }
+
+    componentWillMount () {
+      const {store} = this.context
+      this._updateProps()
+      store.subscribe(() => this._updateProps())
+    }
+
+    _updateProps () {
+      // let stateProps = mapStateToProps(store.getState(), this.props) // 额外传入 props，让获取数据更加灵活方便
+      const stateProps = this._getMapStateProps(this.props)
+      const dispatchProps = this._getMapDispatchToProps()
+      this.setState({
+        allProps: { // 整合普通的 props 和从 state 生成的 props
+          ...stateProps,
+          ...dispatchProps,
+          ...this.props
+        }
+      })
+    }
+
+    _getMapDispatchToProps() {
+      const {store} = this.context
+      let res = {}
+      const dispatchProps = mapDispatchToProps
+      if (dispatchProps) {
+        res = dispatchProps(store.dispatch, this.props)
+      }
+      return res
+    }
+
+    _getMapStateProps (...args) {
       const {store} = this.context
       const state = store.getState()
-      const mapState = mapStateToProps
+      const mapState = mapStateToProps // 可谓对象 数组 函数
       const mapStateType = typeof mapState
       let res = {}
       if (Array.isArray(mapState)) {
@@ -24,14 +58,14 @@ const connect = (mapStateToProps) => (WrappedComponent) => {
           }
         }
       } else if (mapStateType === 'function') {
-        res = mapState(state)
+        res = mapState(state, ...args)
       }
       return res
     }
 
     render () {
-      const stateProps = this._getMapStateProps()
-      return <WrappedComponent {...stateProps} {...this.props}/>
+      const {allProps} = this.state
+      return <WrappedComponent {...allProps} {...this.props}/>
     }
   }
 
