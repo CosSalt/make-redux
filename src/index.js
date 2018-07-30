@@ -2,8 +2,8 @@ import React,{Component} from 'react';
 import ReactDOM from 'react-dom';
 // import App from './app'
 // import PropTypes from 'prop-types'
-import Header from './Header'
-import Content from './Content'
+import Header from './containers/Header'
+import Content from './containers/Content'
 // import store from './store'
 // import {Provider} from './react-redux'
 import {createStore} from 'redux'

@@ -1,7 +1,5 @@
 import React,{Component} from 'react'
 import PropTypes from 'prop-types'
-// import {connect} from './react-redux'
-import {connect} from 'react-redux'
 
 class Header extends Component {
   static propTypes = {
@@ -16,14 +14,5 @@ class Header extends Component {
     )
   }
 }
-
-// const mapStateToProps = ['themeColor']
-const mapStateToProps = (state = {}) => {
-  return {
-    themeColor: state.themeColor
-  }
-}
-
-Header = connect(mapStateToProps)(Header)
 
 export default Header
