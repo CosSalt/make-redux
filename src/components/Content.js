@@ -1,10 +1,11 @@
 import React,{Component} from 'react'
 import PropTypes from 'prop-types'
-import ThemeSwitch from '../containers/ThemeSwitch'
+import ThemeSwitch from './ThemeSwitch'
 
 class Content extends Component {
   static propTypes = {
-    themeColor: PropTypes.string
+    themeColor: PropTypes.string,
+    onSwitchColor: PropTypes.func
   }
 
   render () {
@@ -13,7 +14,7 @@ class Content extends Component {
     return (
       <div>
         <p style={colorStyle}>React.js 小书内容</p>
-        <ThemeSwitch />
+        <ThemeSwitch {...this.props} />
       </div>
     )
   }

@@ -7,6 +7,18 @@ const mapStateToProps = (state = {}) => {
   }
 }
 
-const ContentContainer = connect(mapStateToProps)(Content) 
+// 给 ThemeSwitch 使用
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSwitchColor: (color) => {
+      dispatch({
+        type: 'CHANGE_COLOR',
+        themeColor: color
+      })
+    }
+  }
+}
+
+const ContentContainer = connect(mapStateToProps, mapDispatchToProps)(Content) 
 
 export default ContentContainer
