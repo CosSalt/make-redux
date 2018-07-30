@@ -4,8 +4,35 @@ import ReactDOM from 'react-dom';
 // import PropTypes from 'prop-types'
 import Header from './Header'
 import Content from './Content'
-import store from './store'
-import {Provider} from './react-redux'
+// import store from './store'
+// import {Provider} from './react-redux'
+import {createStore} from 'redux'
+import {Provider} from 'react-redux'
+
+
+const themeReducer = (state, action={}) => {
+  if(!state) {
+    return {
+      themeColor: 'red'
+    }
+  }
+  let res
+  const {type, themeColor} = action
+  switch(type) {
+    case 'CHANGE_COLOR':
+      res = {
+        ...state,
+        themeColor
+      }
+      break
+    default:
+      res = state
+      break
+  }
+  return res
+}
+
+const store = createStore(themeReducer)
 
 class Index extends Component {
   render () {
@@ -17,6 +44,8 @@ class Index extends Component {
     )
   }
 }
+
+
 
 ReactDOM.render(
   <Provider store={store}>
